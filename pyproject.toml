@@ -1,0 +1,71 @@
+[project]
+name = "pdflow"
+version = "0.1.0"
+description = "pdflow is a libarary to help you work with documents."
+readme = "README.md"
+authors = [
+    { name = "Ernesto", email = "ernesto@caoslabs.com" }
+]
+requires-python = ">=3.12"
+
+dependencies = [
+    "opencv-python>=4.11.0.86",
+    "pillow>=11.1.0",
+    "pymupdf>=1.25.3",
+    "pyzbar>=0.1.9",
+    "supervision>=0.25.1",
+    "ultralytics>=8.3.74",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ipykernel",
+    "pytest>=8.1.1",
+    "pytest-cov>=4.1.0",
+    "black>=23.7.0",
+    "isort>=5.12.0",
+    "mypy>=1.5.1",
+    "ruff>=0.0.291",
+    "sphinx>=7.2.6",
+    "sphinx-rtd-theme>=2.0.0",
+    "sphinx-autodoc-typehints>=1.25.2",
+    "myst-parser>=2.0.0",
+    "pdoc>=14.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra -q --cov=pdflow"
+
+[tool.black]
+line-length = 88
+target-version = ["py313"]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.ruff]
+select = ["E", "F", "B"]
+ignore = []
+line-length = 88
+target-version = "py313"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pdflow"]
+
+[tool.hatch.build]
+artifacts = [
+    "src/pdflow/segmentation/models/*.pt"
+]
