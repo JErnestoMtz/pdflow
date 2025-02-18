@@ -36,11 +36,7 @@ dev = [
     "myst-parser>=2.0.0",
     "pdoc>=14.0.0",
 ]
-legacy = [
-    "ultralytics==8.0.196",
-    "numpy>=1.21.0,<2.0.0",
-]
-modern = [
+ml = [
     "ultralytics>=8.0.196",
     "numpy>=2.0.0",
 ]
