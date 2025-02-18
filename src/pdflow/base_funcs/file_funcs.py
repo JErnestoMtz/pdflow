@@ -1,41 +1,69 @@
 import fitz  # PyMuPDF
 from PIL import Image
 import os
+from typing import Union, BinaryIO, List
 
-def file_to_images(file_path: str) -> list[Image.Image]:
+def file_to_images(file_input: Union[str, BinaryIO]) -> List[Image.Image]:
     """
     Converts a file (PDF or image) to a list of Pillow Images.
     Handles multi-page files (PDF, TIFF, GIF) and single-page files (PNG, JPG).
-    
+    Accepts either a file path or a file-like object opened in binary mode (rb).
+
     Args:
-        file_path: Path to the input file (PDF, PNG, JPG, TIFF, GIF, etc.)
-        
+        file_input: Path to the input file (PDF, PNG, JPG, TIFF, GIF, etc.) 
+                    or a file object opened in binary mode.
+
     Returns:
         List of PIL Images (one for each page/frame)
     """
     images = []
     
-    if os.path.splitext(file_path)[1].lower() == '.pdf':
-        # Process PDF files with PyMuPDF
-        pdf_document = fitz.open(file_path)
-        for page_num in range(len(pdf_document)):
-            page = pdf_document.load_page(page_num)
-            matrix = fitz.Matrix(300/72, 300/72)  # 300 DPI
-            pix = page.get_pixmap(matrix=matrix)
-            img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
-            images.append(img)
-        pdf_document.close()
+    # Check if file_input is a string (file path) or a file-like object
+    if isinstance(file_input, str):
+        ext = os.path.splitext(file_input)[1].lower()
+        if ext == '.pdf':
+            # Process PDF files with PyMuPDF
+            pdf_document = fitz.open(file_input)
+            for page_num in range(len(pdf_document)):
+                page = pdf_document.load_page(page_num)
+                matrix = fitz.Matrix(300/72, 300/72)  # 300 DPI
+                pix = page.get_pixmap(matrix=matrix)
+                img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+                images.append(img)
+            pdf_document.close()
+        else:
+            # Process image files with Pillow
+            with Image.open(file_input) as img:
+                while True:
+                    try:
+                        images.append(img.copy())
+                        img.seek(img.tell() + 1)
+                    except (EOFError, ValueError):
+                        break
     else:
-        # Process image files with Pillow
-        with Image.open(file_path) as img:
-            while True:
-                try:
-                    images.append(img.copy())
-                    # Try to seek to next frame/page
-                    img.seek(img.tell() + 1)
-                except EOFError:
-                    break  # End of frames/pages
-                except ValueError:
-                    break  # Some formats might raise ValueError instead
-    
+        # file_input is a file-like object (opened in binary mode)
+        file_input.seek(0)
+        header = file_input.read(4)
+        file_input.seek(0)
+        if header.startswith(b"%PDF"):
+            # Process PDF from binary stream
+            file_bytes = file_input.read()
+            pdf_document = fitz.open(stream=file_bytes, filetype="pdf")
+            for page_num in range(len(pdf_document)):
+                page = pdf_document.load_page(page_num)
+                matrix = fitz.Matrix(300/72, 300/72)  # 300 DPI
+                pix = page.get_pixmap(matrix=matrix)
+                img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+                images.append(img)
+            pdf_document.close()
+        else:
+            # Process image file from binary stream using Pillow
+            with Image.open(file_input) as img:
+                while True:
+                    try:
+                        images.append(img.copy())
+                        img.seek(img.tell() + 1)
+                    except (EOFError, ValueError):
+                        break
+
     return images
