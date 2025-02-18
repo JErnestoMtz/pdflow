@@ -11,13 +11,9 @@ def extract_qrs(file_path: str) -> List[Optional[Image.Image]]:
     return qrs
 
 def extract_qrs_decoded(file_path: str) -> List[Optional[str]]:
-    images = file_to_images(file_path)
-    qrs = []
-    for image in images:
-        decoded_qrs = read_qr_code(image)  # Assuming this also returns a list
-        qrs.extend(decoded_qrs)  # Flatten the list
-    return qrs
-
+    qrs = extract_qrs(file_path)
+    decoded_qrs = [read_qr_code(qr) for qr in qrs if qr is not None]
+    return decoded_qrs
 
 
 

@@ -9,10 +9,14 @@ authors = [
 requires-python = ">=3.12"
 
 dependencies = [
+    "azure-ai-formrecognizer>=3.3.3",
+    "azure-ai-ml>=1.25.0",
+    "ipykernel>=6.29.5",
     "opencv-python>=4.11.0.86",
     "pillow>=11.1.0",
     "pydantic-ai>=0.0.24",
     "pymupdf>=1.25.3",
+    "python-dotenv>=1.0.1",
     "pyzbar>=0.1.9",
     "supervision>=0.25.1",
     "ultralytics>=8.3.74",

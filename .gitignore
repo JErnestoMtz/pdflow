@@ -31,6 +31,8 @@ ENV/
 .vscode/
 *.swp
 *.swo
+*.pt
+*.pth
 
 # Test / Coverage
 .coverage
