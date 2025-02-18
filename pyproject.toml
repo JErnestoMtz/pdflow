@@ -1,6 +1,6 @@
 [project]
 name = "pdflow"
-version = "0.1.0"
+version = "0.2.0"
 description = "pdflow is a libarary to help you work with documents."
 readme = "README.md"
 authors = [
