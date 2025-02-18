@@ -7,11 +7,6 @@ from functools import wraps
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
 from azure.ai.formrecognizer import DocumentAnalysisClient
-try:
-    from ultralytics import YOLO
-    YOLO_AVAILABLE = True
-except ImportError:
-    YOLO_AVAILABLE = False
 
 from .base import ExtractionMessage, ImagePreprocessor, TextExtractionModel, OCRModel, SegmentationModel
 
@@ -184,9 +179,16 @@ class TwoStageExtractor(TextExtractionModel):
             print(f"Error extracting fields: {str(e)}")
             return {field: None for field in fields}
 
-if YOLO_AVAILABLE:
+# YOLO integration is optional and only available if ultralytics is installed
+try:
+    from ultralytics import YOLO
+    
     class YOLOSegmentationAdapter(SegmentationModel):
-        """Adapter to make YOLO models compatible with SegmentationModel interface."""
+        """Adapter to make YOLO models compatible with SegmentationModel interface.
+        
+        This class is only available if ultralytics package is installed.
+        Install with: pip install "pdflow[ml]"
+        """
         def __init__(self, model: YOLO):
             self.model = model
             self._labels = None
@@ -213,4 +215,6 @@ if YOLO_AVAILABLE:
                     boxes_by_class[class_id] = []
                 boxes_by_class[class_id].append((x1, y1, x2, y2))
 
-            return boxes_by_class 
+            return boxes_by_class
+except ImportError:
+    pass 

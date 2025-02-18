@@ -10,9 +10,7 @@ from .default_models import (
     DefaultImagePreprocessor,
     MultiModalModel,
     TwoStageExtractor,
-    YOLOSegmentationAdapter
 )
-from .document_analyzer import DocumentAnalyzer
 
 __all__ = [
     'SegmentationModel',
@@ -25,5 +23,12 @@ __all__ = [
     'MultiModalModel',
     'TwoStageExtractor',
     'DocumentAnalyzer',
-    'YOLOSegmentationAdapter'
 ]
+
+try:
+    from .default_models import YOLOSegmentationAdapter
+    __all__.append('YOLOSegmentationAdapter')
+except ImportError:
+    pass
+
+from .document_analyzer import DocumentAnalyzer
