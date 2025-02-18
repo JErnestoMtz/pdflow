@@ -2,21 +2,26 @@ import fitz  # PyMuPDF
 from PIL import Image
 import os
 from typing import Union, BinaryIO, List
+import io
 
-def file_to_images(file_input: Union[str, BinaryIO]) -> List[Image.Image]:
+def file_to_images(file_input: Union[str, BinaryIO, bytes]) -> List[Image.Image]:
     """
     Converts a file (PDF or image) to a list of Pillow Images.
     Handles multi-page files (PDF, TIFF, GIF) and single-page files (PNG, JPG).
-    Accepts either a file path or a file-like object opened in binary mode (rb).
+    Accepts a file path, a file-like object opened in binary mode (rb), or bytes.
 
     Args:
-        file_input: Path to the input file (PDF, PNG, JPG, TIFF, GIF, etc.) 
-                    or a file object opened in binary mode.
+        file_input: Path to the input file (PDF, PNG, JPG, TIFF, GIF, etc.), 
+                   a file object opened in binary mode, or bytes content.
 
     Returns:
         List of PIL Images (one for each page/frame)
     """
     images = []
+    
+    # Handle bytes input by converting to BytesIO
+    if isinstance(file_input, bytes):
+        file_input = io.BytesIO(file_input)
     
     # Check if file_input is a string (file path) or a file-like object
     if isinstance(file_input, str):
