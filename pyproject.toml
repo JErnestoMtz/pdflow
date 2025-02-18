@@ -19,8 +19,6 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "pyzbar>=0.1.9",
     "supervision>=0.15.0",
-    "ultralytics==8.0.196",
-    "numpy>=1.21.0,<2.0.0",
 ]
 
 [project.optional-dependencies]
@@ -37,6 +35,14 @@ dev = [
     "sphinx-autodoc-typehints>=1.25.0",
     "myst-parser>=2.0.0",
     "pdoc>=14.0.0",
+]
+legacy = [
+    "ultralytics==8.0.196",
+    "numpy>=1.21.0,<2.0.0",
+]
+modern = [
+    "ultralytics>=8.0.196",
+    "numpy>=2.0.0",
 ]
 
 [build-system]

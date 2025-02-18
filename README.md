@@ -32,27 +32,29 @@ PDFlow is a Python library for document processing and analysis, featuring QR co
 You can install PDFlow directly from GitHub using pip or uv:
 
 ```bash
-# Using uv
+# Basic installation (no ML models)
 uv add git+https://github.com/JErnestoMtz/pdflow
 
-# Using pip
-pip install git+https://github.com/JErnestoMtz/pdflow
+# For projects using numpy < 2.0.0
+uv add "git+https://github.com/JErnestoMtz/pdflow[legacy]"
+
+# For projects using numpy >= 2.0.0
+uv add "git+https://github.com/JErnestoMtz/pdflow[modern]"
+
+# For development
+uv add "git+https://github.com/JErnestoMtz/pdflow[dev]"
 ```
 
-For development installation:
+### Dependency Sets
 
-```bash
-# Clone the repository
-git clone https://github.com/JErnestoMtz/pdflow.git
-cd pdflow
+PDFlow provides different dependency sets to accommodate various project requirements:
 
-# Create and activate virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows, use `.venv\Scripts\activate`
+- **Basic**: Core functionality without ML models
+- **Legacy**: Includes ultralytics and numpy <2.0.0
+- **Modern**: Includes ultralytics and numpy >=2.0.0
+- **Dev**: Development tools and testing dependencies
 
-# Install in development mode with extra dependencies
-python -m pip install -e ".[dev]"
-```
+Choose the appropriate set based on your project's numpy version and requirements.
 
 ## Quick Start
 
