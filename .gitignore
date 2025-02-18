@@ -63,3 +63,15 @@ wheels/
 
 # Extras
 *.pdf
+
+# Tests
+tests/
+test_*.py
+*_test.py
+pytest_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Project specific
+yolov11l_best.pt
