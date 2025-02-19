@@ -126,10 +126,6 @@ class TwoStageExtractor(TextExtractionModel):
     async def extract_fields(self, text: str, fields: List[str]) -> Dict[str, Optional[Union[str, List[Dict[str, Any]]]]]:
         """Extract structured fields from text using the PydanticAI Agent."""
         messages = self.extraction_message(fields, text)
-        print("\nPrompt Messages:")
-        for msg in messages:
-            print(f"\n{msg['role'].upper()} MESSAGE:")
-            print(msg['content'])
         
         try:
             # Combine system and user messages into a single prompt
@@ -137,7 +133,6 @@ class TwoStageExtractor(TextExtractionModel):
             
             # Use the agent to run the extraction, applying the model settings if provided
             result = await self.agent.run(prompt, model_settings=self.model_settings)
-            print("\nModel Response:", result.data)
             
             # Parse the response
             if isinstance(result.data, dict):
@@ -152,9 +147,7 @@ class TwoStageExtractor(TextExtractionModel):
                 
                 try:
                     extracted_data = json.loads(response_text)
-                except json.JSONDecodeError as e:
-                    print(f"Error parsing JSON: {str(e)}")
-                    print(f"Attempted to parse: {response_text}")
+                except json.JSONDecodeError:
                     return {field: None for field in fields}
             
             # Process each field, handling both single values and lists
@@ -175,8 +168,7 @@ class TwoStageExtractor(TextExtractionModel):
                     processed_data[field] = value
                     
             return processed_data
-        except Exception as e:
-            print(f"Error extracting fields: {str(e)}")
+        except Exception:
             return {field: None for field in fields}
 
 # YOLO integration is optional and only available if ultralytics is installed
